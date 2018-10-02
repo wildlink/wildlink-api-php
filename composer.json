@@ -1,0 +1,20 @@
+{
+    "name": "wildlink/wildlink-api-php",
+    "description": "A simple PHP interface for the Wildlink API",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Ian Miller",
+            "email": "ian@wildfire-corp.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "WildlinkApi": "src/"
+        }
+    }
+}
