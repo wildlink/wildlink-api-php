@@ -1,3 +1,2 @@
-src/WildlinkApi/data/uuid
-vendor
-src/WildlinkApi/data/api_credentials
+src/WildlinkApi/data/*
+
