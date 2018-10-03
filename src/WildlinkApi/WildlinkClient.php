@@ -168,7 +168,7 @@ class WildlinkClient
 
     public function getCommissionDetails()
     {
-        $this->commissions = $this->request('getCommissionDetails', array("uuid" => $uuid));
+        $this->commissions = $this->request('getCommissionDetails', array("uuid" => $this->uuid));
     }
 
 }
