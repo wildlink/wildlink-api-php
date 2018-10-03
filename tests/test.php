@@ -11,7 +11,9 @@ echo "testing auth token generation\n";
 #$wf = new WildlinkClient($app_id, $secret, $uuid);
 
 // instantiate a Wildlink Client and let it generate a v4 UUID
-$wf = new WildlinkClient();
+$app_id = 123456; // <-- replace with your app_id
+$secret = 'foo'; // <-- replace with your secret
+$wf = new WildlinkClient($app_id, $secret);
 
 echo "\n\nUUID\n";
 echo $wf->uuid;
