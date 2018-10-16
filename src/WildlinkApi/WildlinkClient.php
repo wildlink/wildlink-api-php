@@ -16,25 +16,8 @@ class WildlinkClient
         if ($this->uuid){
             return $this->uuid;
         } else {
-            // look to see if we have a cached value for the uuid
-            $cached_uuid_dir = dirname(__FILE__) . "/data";
-            $cached_uuid_file = $cached_uuid_dir . "/uuid";
-            if (file_exists($cached_uuid_file)){
-                $cached_uuid = file_get_contents($cached_uuid_file);
-            }
-            if (isset($cached_uuid)){
-                $this->uuid = $cached_uuid;
-            } else {
-                // no cached uuid, so let's generate a new one
-                $this->uuid = Uuid::makeUuid();
-
-                // store it in cache
-                if (!is_dir($cached_uuid_dir)){
-                    mkdir($cached_uuid_dir, 0777, true);
-                }
-                file_put_contents($cached_uuid_file, $this->uuid);
-            }
-
+            // generate a new one
+            $this->uuid = Uuid::makeUuid();
             return $this->uuid;
         }
     }
