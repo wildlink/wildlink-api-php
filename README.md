@@ -1,10 +1,13 @@
 wildlink-api-php
 ==================
 
-Wildlink API PHP client example
+Wildlink API PHP client example.  See also:
+
+* [Getting Started](https://blog.wildlink.me/developers/getting-started-php-library/)
+* [SDK Reference](https://blog.wildlink.me/developers/wildlink-php-library-reference/)
 
 
-Using
+Usage
 ------------------
 
 ```
@@ -15,12 +18,12 @@ echo $wf->device_token;
 
 - merchants
 ```
-$wf->getMerchants(5477615);
-var_dump($wf->merchants);
+$merchants = $wf->getMerchantsById(5477615);
+var_dump($merchants);
 ```
 
 - commissionDetails
 ```
-$wf->getCommissionDetails();
-var_dump($wf->commissions);
+$commissions = $wf->getCommissionDetails();
+var_dump($commissions);
 ```
