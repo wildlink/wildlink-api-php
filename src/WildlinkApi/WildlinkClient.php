@@ -10,32 +10,31 @@ class WildlinkClient
         $this->secret = $secret;
 
         if ($uuid){
-            $this->uuid = (string) $uuid;
+            $result = $this->makeDeviceToken($uuid);
         } else {
-            $uuid = $this->getUuid();
+            $result = $this->makeDeviceToken();
         }
-        $this->device_token = $this->makeDeviceToken($this->uuid);
-    }
 
-    private function getUuid()
-    {
-        if ($this->uuid){
-            return $this->uuid;
-        } else {
-            $this->uuid = Uuid::makeUuid();
-            return $this->uuid;
+        if ($result->DeviceToken){
+            $this->device_token = $result->DeviceToken;
+        }
+        if ($result->UUID){
+            $this->uuid = $result->UUID;
         }
     }
 
-    public function makeDeviceToken($uuid)
+    public function makeDeviceToken($uuid = '')
     {
         $date_time = date('Y-m-d H:i:sZ', time());
-        @$post_obj->UUID = $uuid;
-        $post_obj->OS = "Linux";
+        if ($uuid){
+            @$post_obj->UUID = $uuid;
+            $post_obj->OS = "Linux";
+        } else {
+            @$post_obj->OS = "Linux";
+        }
         $response = $this->request('makeDeviceToken', array("post_obj"=>$post_obj));
-        $device_token = $response->DeviceToken;
 
-        return $device_token;
+        return $response;
     }
 
     public function getAuth($date_time, $device_token = '', $sender_token = '')
@@ -197,7 +196,7 @@ class WildlinkClient
 
     public function getCommissionDetails()
     {
-        $result = $this->request('getCommissionDetails', array("uuid" => $this->uuid));
+        $result = $this->request('getCommissionDetails');
         return $result;
     }
 

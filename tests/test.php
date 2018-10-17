@@ -18,13 +18,10 @@ function out($str, $type = ''){
 
 out("testing auth token generation");
 
-// OPTIONAL : instantiate a Wildlink Client with an explicit UUID
-#$uuid = 32973973;
-#$wf = new WildlinkClient($app_id, $secret, $uuid);
-
-// instantiate a Wildlink Client and let it generate a v4 UUID
+// instantiate a Wildlink Client
 $appID = @$argv[1]; // get app_id from cli
 $secret = @$argv[2]; // get secret from cli
+$uuid = @$argv[3]; // optional UUID from cli to start new session with previously created device
 
 if (!$appID || !$secret){
     out("either app_id or secret not passed in.  Try invoking via 'php path/to/test.php [APP_ID] '[APP_SECRET]'", 'error'); exit;
@@ -32,8 +29,14 @@ if (!$appID || !$secret){
 
 out("connecting to Wildlink with app id $appID and secret $secret");
 
-$wfClient = new WildlinkClient($appID, $secret);
+// OPTIONAL : instantiate a Wildlink Client with a UUID to create a new session with an existing  device
+if ($uuid){
+    $wfClient = new WildlinkClient($appID, $secret, $uuid);
+} else {
+    $wfClient = new WildlinkClient($appID, $secret);
+}
 
+// Note: Wildlink web service will create and return a UUID unless one is passed in
 out("UUID: " . $wfClient->uuid);
 
 if ($wfClient->device_token){
