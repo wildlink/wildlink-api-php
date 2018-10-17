@@ -4,41 +4,6 @@ namespace WildlinkApi;
 
 class WildlinkClient
 {
-    public $uuid;
-    public $device_token;
-    public $merchants;
-    public $commissions;
-    public $app_id;
-    public $secret;
-
-    private function getUuid()
-    {
-        if ($this->uuid){
-            return $this->uuid;
-        } else {
-            // look to see if we have a cached value for the uuid
-            $cached_uuid_dir = dirname(__FILE__) . "/data";
-            $cached_uuid_file = $cached_uuid_dir . "/uuid";
-            if (file_exists($cached_uuid_file)){
-                $cached_uuid = file_get_contents($cached_uuid_file);
-            }
-            if (isset($cached_uuid)){
-                $this->uuid = $cached_uuid;
-            } else {
-                // no cached uuid, so let's generate a new one
-                $this->uuid = Uuid::makeUuid();
-
-                // store it in cache
-                if (!is_dir($cached_uuid_dir)){
-                    mkdir($cached_uuid_dir, 0777, true);
-                }
-                file_put_contents($cached_uuid_file, $this->uuid);
-            }
-
-            return $this->uuid;
-        }
-    }
-
     public function __construct($app_id, $secret, $uuid = '')
     {
         $this->app_id = $app_id;
@@ -50,6 +15,16 @@ class WildlinkClient
             $uuid = $this->getUuid();
         }
         $this->device_token = $this->makeDeviceToken($this->uuid);
+    }
+
+    private function getUuid()
+    {
+        if ($this->uuid){
+            return $this->uuid;
+        } else {
+            $this->uuid = Uuid::makeUuid();
+            return $this->uuid;
+        }
     }
 
     public function makeDeviceToken($uuid)
@@ -74,24 +49,53 @@ class WildlinkClient
 
     public function getEndpointInfo($function){
         if ($function == 'makeDeviceToken'){
-            @$api_info->endpoint = '/v1/device';
+            @$api_info->endpoint = '/v2/device';
             $api_info->method = 'POST';
         }
 
-        if ($function == 'getMerchant'){
+        // MERCHANT functions
+        if ($function == 'getMerchantsById'){
             @$api_info->endpoint = '/v2/merchant/?id=:id';
             $api_info->method = 'GET';
         }
 
-        if ($function == 'getCommissionDetails'){
-            @$api_info->endpoint = '/v1/device/:uuid/stats/commission-detail';
+        /* TODO: coming soon...
+        if ($function == 'getAllEnabledMerchants'){
+            @$api_info->endpoint = '/v2/merchant/?disabled=false';
             $api_info->method = 'GET';
         }
+        */
+
+        // COMMISSION functions
+        if ($function == 'getCommissionSummary'){
+            @$api_info->endpoint = '/v2/device/stats/commission-summary';
+            $api_info->method = 'GET';
+        }
+
+        if ($function == 'getCommissionDetails'){
+            @$api_info->endpoint = '/v2/device/stats/commission-detail';
+            $api_info->method = 'GET';
+        }
+
+        // CLICKS functions
+        if ($function == 'getClickStats'){
+            @$api_info->endpoint = '/v2/device/stats/clicks?by=:by&start=:start&end=:end';
+            $api_info->method = 'GET';
+        }
+
+        // VANITY URL functions
+        if ($function == 'getVanityUrl'){
+            @$api_info->endpoint = '/v2/vanity';
+            $api_info->method = 'POST';
+        }
+
         return $api_info;
     }
 
-    public function request($function, $vars)
+    public function request($function, $vars = null)
     {
+        #$vars['debug'] = true;
+
         $api_url_base = "https://api.wfi.re";
 
         $api_info = $this->getEndpointInfo($function);
@@ -161,14 +165,90 @@ class WildlinkClient
         return $result;
     }
 
-    public function getMerchants($ids)
+    // MERCHANT functions
+    public function getMerchantsById($ids)
     {
-        $this->merchants = $this->request('getMerchant', array("id" => $ids));
+        $result = $this->request('getMerchantsById', array("id" => $ids));
+        if ($result->Merchants){
+            return $result->Merchants;
+        } else {
+            return $result;
+        }
+    }
+
+    /* TODO: comming soon
+    public function getAllEnabledMerchants()
+    {
+        $result = $this->request('getAllEnabledMerchants');
+        if ($result->Merchants){
+            return $result->Merchants;
+        } else {
+            return $result;
+        }
+    }
+    */
+
+    // COMMISSION functions
+    public function getCommissionSummary()
+    {
+        $result = $this->request('getCommissionSummary');
+        return $result;
     }
 
     public function getCommissionDetails()
     {
-        $this->commissions = $this->request('getCommissionDetails', array("uuid" => $this->uuid));
+        $result = $this->request('getCommissionDetails', array("uuid" => $this->uuid));
+        return $result;
+    }
+
+    // CLICKS functions
+    public function getClickStats($start, $end = '')
+    {
+        $result = $this->request('getClickStats', array(
+            'by' => 'day', // assume day intervals
+            'start' => $start,
+            'end' => $end
+        ));
+        return $result;
+    }
+
+    public function getClickStatsByDay($start, $end = '')
+    {
+        $result = $this->request('getClickStats', array(
+            'by' => 'day',
+            'start' => $start,
+            'end' => $end
+        ));
+        return $result;
+    }
+
+    public function getClickStatsByMonth($start, $end = '')
+    {
+        $result = $this->request('getClickStats', array(
+            'by' => 'month',
+            'start' => $start,
+            'end' => $end
+        ));
+        return $result;
+    }
+
+    public function getClickStatsByYear($start, $end = '')
+    {
+        $result = $this->request('getClickStats', array(
+            'by' => 'year',
+            'start' => $start,
+            'end' => $end
+        ));
+        return $result;
+    }
+
+    // VANITY URL functions
+    public function getVanityUrl($url)
+    {
+        $result = $this->request('getVanityUrl', array(
+            'post_obj' => (object) ['URL'=>$url]
+        ));
+        return $result;
     }
 
 }
