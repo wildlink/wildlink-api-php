@@ -4,18 +4,25 @@ namespace WildlinkApi;
 
 class WildlinkClient
 {
-    public function __construct($app_id, $secret, $uuid = '')
+    public function __construct($app_id, $secret, $uuid = '', $device_token = '')
     {
         $this->app_id = $app_id;
         $this->secret = $secret;
 
-        $result = $this->makeDeviceToken($uuid);
+        if ($uuid && $device_token){
+            // uuid and device token provided, so just store the values
+            $this->uuid = $uuid;
+            $this->device_token = $device_token;
+        } else {
+            // generate a device token, with the UUID if we have it
+            $result = $this->makeDeviceToken($uuid);
 
-        if ($result->DeviceToken){
-            $this->device_token = $result->DeviceToken;
-        }
-        if ($result->UUID){
-            $this->uuid = $result->UUID;
+            if ($result->DeviceToken){
+                $this->device_token = $result->DeviceToken;
+            }
+            if ($result->UUID){
+                $this->uuid = $result->UUID;
+            }
         }
     }
 
@@ -57,12 +64,10 @@ class WildlinkClient
             $api_info->method = 'GET';
         }
 
-        /* TODO: coming soon...
-        if ($function == 'getAllEnabledMerchants'){
-            $api_info->endpoint = '/v2/merchant/?disabled=false';
+        if ($function == 'getEnabledMerchants'){
+            $api_info->endpoint = '/v2/merchant/?disabled=false&cursor=:cursor';
             $api_info->method = 'GET';
         }
-        */
 
         // COMMISSION functions
         if ($function == 'getCommissionSummary'){
@@ -174,17 +179,43 @@ class WildlinkClient
         }
     }
 
-    /* TODO: comming soon
     public function getAllEnabledMerchants()
     {
-        $result = $this->request('getAllEnabledMerchants');
+        $merchants = [];
+
+        $result = $this->request('getEnabledMerchants', [
+            'cursor' => ''
+        ]);
         if ($result->Merchants){
-            return $result->Merchants;
+            // request next pages until there are none left
+            $merchants += $result->Merchants;
+            while ($result->NextCursor){
+                $result = $this->request('getEnabledMerchants', [
+                    'cursor' => $result->NextCursor
+                ]);
+                if ($result->Merchants){
+                    $merchants = array_merge($merchants, $result->Merchants);
+                }
+            }
+            return $merchants;
         } else {
             return $result;
         }
     }
-    */
+
+    public function getPagedEnabledMerchants()
+    {
+        // FIXME: we may have multiple cursors to maintain in the future
+        if (!$this->cursor){
+            $this->cursor = '';
+        }
+
+        $result = $this->request('getEnabledMerchants', [
+            'cursor' => $this->cursor
+        ]);
+        $this->cursor = $result->NextCursor;
+        return $result->Merchants;
+    }
 
     // COMMISSION functions
     public function getCommissionSummary()
@@ -202,50 +233,50 @@ class WildlinkClient
     // CLICKS functions
     public function getClickStats($start, $end = '')
     {
-        $result = $this->request('getClickStats', array(
+        $result = $this->request('getClickStats', [
             'by' => 'day', // assume day intervals
             'start' => $start,
             'end' => $end
-        ));
+        ]);
         return $result;
     }
 
     public function getClickStatsByDay($start, $end = '')
     {
-        $result = $this->request('getClickStats', array(
+        $result = $this->request('getClickStats', [
             'by' => 'day',
             'start' => $start,
             'end' => $end
-        ));
+        ]);
         return $result;
     }
 
     public function getClickStatsByMonth($start, $end = '')
     {
-        $result = $this->request('getClickStats', array(
+        $result = $this->request('getClickStats', [
             'by' => 'month',
             'start' => $start,
             'end' => $end
-        ));
+        ]);
         return $result;
     }
 
     public function getClickStatsByYear($start, $end = '')
     {
-        $result = $this->request('getClickStats', array(
+        $result = $this->request('getClickStats', [
             'by' => 'year',
             'start' => $start,
             'end' => $end
-        ));
+        ]);
         return $result;
     }
 
     // VANITY URL functions
     public function getVanityUrl($url)
     {
-        $result = $this->request('getVanityUrl', array(
+        $result = $this->request('getVanityUrl', [
             'post_obj' => (object) ['URL'=>$url]
-        ));
+        ]);
         return $result;
     }
 

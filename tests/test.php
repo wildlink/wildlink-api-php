@@ -5,16 +5,21 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use WildlinkApi\WildlinkClient;
 
 function out($str, $type = ''){
-    if ($type == 'error'){
-        echo "\033[31m";
+    $color_array['error'] = "\033[31m";
+    $color_array['success'] = "\033[32m";
+    echo $color_array[$type];
+
+    if (!is_string($str)){
+        print_r($str);
+    } else {
+        echo $str;
     }
-    if ($type == 'success'){
-        echo "\033[32m";
-    }
-    echo $str;
+
     echo "\033[0m"; // reset any color that may be applied
     echo "\n-------\n";
 }
+
+out("starting tests...", 'success');
 
 out("testing auth token generation");
 
@@ -22,6 +27,7 @@ out("testing auth token generation");
 $appID = @$argv[1]; // get app_id from cli
 $secret = @$argv[2]; // get secret from cli
 $uuid = @$argv[3]; // optional UUID from cli to start new session with previously created device
+$deviceToken = @$argv[4]; // optional deviceToken from cli to start new session with previously created deviceToken
 
 if (!$appID || !$secret){
     out("either app_id or secret not passed in.  Try invoking via 'php path/to/test.php [APP_ID] '[APP_SECRET]'", 'error'); exit;
@@ -29,8 +35,10 @@ if (!$appID || !$secret){
 
 out("connecting to Wildlink with app id $appID and secret $secret");
 
-// OPTIONAL : instantiate a Wildlink Client with a UUID to create a new session with an existing  device
-if ($uuid){
+if ($uuid && $deviceToken){
+    $wfClient = new WildlinkClient($appID, $secret, $uuid, $deviceToken);
+} elseif ($uuid){
+    // OPTIONAL : instantiate a Wildlink Client with a UUID to create a new session with an existing  device
     $wfClient = new WildlinkClient($appID, $secret, $uuid);
 } else {
     $wfClient = new WildlinkClient($appID, $secret);
@@ -40,9 +48,9 @@ if ($uuid){
 out("UUID: " . $wfClient->uuid);
 
 if ($wfClient->device_token){
-  out("device token: " . $wfClient->device_token);
+    out("device token: " . $wfClient->device_token);
 } else {
-  out("no device token generated, exiting", 'error'); exit;
+    out("FAIL. No device token generated, exiting", 'error'); exit;
 }
 
 out("testing getting single merchant by ID (5477615)");
@@ -53,11 +61,39 @@ out("testing getting multiple merchants by ID (5482877,5478747)");
 $multipleMerchants = $wfClient->getMerchantsById(array(5482877,5478747));
 print_r($multipleMerchants);
 
-/* TODO: coming soon...
 out("testing refreshing all enabled merchants");
 $allMerchants = $wfClient->getAllEnabledMerchants();
+#print_r($allMerchants);
+
 out("total merchant count: " . count($allMerchants));
-*/
+if (count($allMerchants) > 1000){
+    out("PASS", 'success');
+} else {
+    out("FAIL", 'error');
+}
+
+out("testing getting first two pages of enabled merchants");
+
+out("page 1 (first record):");
+$pageOfMerchants1 = $wfClient->getPagedEnabledMerchants();
+out($pageOfMerchants1[0]);
+#print_r($pageOfMerchants1);
+
+out("page 2 (first record):");
+$pageOfMerchants2 = $wfClient->getPagedEnabledMerchants();
+out($pageOfMerchants2[0]);
+#print_r($pageOfMerchants1);
+
+
+if (!$pageOfMerchants1[0]->Name){
+    out("FAIL: no Name value for first record of first page of merchants", 'error');
+} elseif (!$pageOfMerchants2[0]->Name){
+    out("FAIL: no Name value for first record of second page of merchants", 'error');
+} elseif ($pageOfMerchants1[0]->Name == $pageOfMerchants2[0]->Name){
+    out("FAIL: first record from first and second page of merchants have the same name", 'error');
+} else {
+    out("PASS", 'success');
+}
 
 out("testing getting commission details");
 $commissionDetails = $wfClient->getCommissionDetails();
@@ -100,5 +136,9 @@ sleep(2);
 out("re-request click stats");
 $clicksAfter = $wfClient->getClickStatsByDay('2018-01-01');
 print_r($clicksAfter);
+
+out("\nYou can re-run with UUID as\nphp tests/test.php $appID '$secret' '$wfClient->uuid'\n", 'success');
+
+out("\nYou can re-run with UUID and device token as\nphp tests/test.php $appID '$secret' '$wfClient->uuid' '$wfClient->device_token'\n", 'success');
 
 out("complete.", 'success'); exit;
