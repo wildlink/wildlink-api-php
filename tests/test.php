@@ -55,15 +55,15 @@ if ($wfClient->device_token){
 
 out("testing getting single merchant by ID (5477615)");
 $singleMerchant = $wfClient->getMerchantsById(5477615);
-print_r($singleMerchant);
+out($singleMerchant);
 
 out("testing getting multiple merchants by ID (5482877,5478747)");
 $multipleMerchants = $wfClient->getMerchantsById(array(5482877,5478747));
-print_r($multipleMerchants);
+out($multipleMerchants);
 
 out("testing refreshing all enabled merchants");
 $allMerchants = $wfClient->getAllEnabledMerchants();
-#print_r($allMerchants);
+#out($allMerchants);
 
 out("total merchant count: " . count($allMerchants));
 if (count($allMerchants) > 1000){
@@ -77,12 +77,12 @@ out("testing getting first two pages of enabled merchants");
 out("page 1 (first record):");
 $pageOfMerchants1 = $wfClient->getPagedEnabledMerchants();
 out($pageOfMerchants1[0]);
-#print_r($pageOfMerchants1);
+#out($pageOfMerchants1);
 
 out("page 2 (first record):");
 $pageOfMerchants2 = $wfClient->getPagedEnabledMerchants();
 out($pageOfMerchants2[0]);
-#print_r($pageOfMerchants1);
+#out($pageOfMerchants1);
 
 
 if (!$pageOfMerchants1[0]->Name){
@@ -97,19 +97,19 @@ if (!$pageOfMerchants1[0]->Name){
 
 out("testing getting commission details");
 $commissionDetails = $wfClient->getCommissionDetails();
-print_r($commissionDetails);
+out($commissionDetails);
 
 out("testing getting commission summary");
 $commissionSummary = $wfClient->getCommissionSummary();
-print_r($commissionSummary);
+out($commissionSummary);
 
 out("testing getting commission details");
 $clicks = $wfClient->getClickStatsByDay('2018-01-01');
-print_r($clicks);
+out($clicks);
 
 out("generate a wild.link vanity URL");
 $vanityUrl = $wfClient->getVanityUrl('https://www.walmart.com/ip/VIZIO-24-Class-HD-720P-LED-TV-D24hn-G9/782959488');
-print_r($vanityUrl);
+out($vanityUrl);
 
 out("follow the wild.link we just created to increment the click stats");
 if ($vanityUrl->VanityURL){
@@ -135,7 +135,7 @@ out("wait a couple seconds for stats to process (should be instant but just in c
 sleep(2);
 out("re-request click stats");
 $clicksAfter = $wfClient->getClickStatsByDay('2018-01-01');
-print_r($clicksAfter);
+out($clicksAfter);
 
 out("\nYou can re-run with UUID as\nphp tests/test.php $appID '$secret' '$wfClient->uuid'\n", 'success');
 
