@@ -10,43 +10,20 @@ Wildlink API PHP client example.  See also:
 Usage
 ------------------
 
+## Instantiation
 ```
 $wfClient = new WildlinkClient($app_id, $secret);
 echo $wfClient->uuid;
 echo $wfClient->device_token;
 ```
 
-- merchants
+## Get Specific Merchant
 ```
 $merchants = $wfClient->getMerchantsById(5477615);
 var_dump($merchants);
 ```
 
-- Commissions Summary
-```
-$commissionSummary = $wfClient->getCommissionSummary();
-var_dump($commissionSummary);
-```
-
-- Commissions Detail List
-```
-$commissions = $wfClient->getCommissionDetails();
-var_dump($commissions);
-```
-
-- Click Stats
-```
-$clicks = $wfClient->getClickStatsByDay('2018-01-01');
-var_dump($clicks);
-```
-
-- Create Vanity URL (i.e. http://wild.link/walmart/abc123)
-```
-$vanityUrl = $wfClient->getVanityUrl('https://www.walmart.com/ip/VIZIO-24-Class-HD-720P-LED-TV-D24hn-G9/782959488');
-var_dump($vanityUrl);
-```
-
-- Get All Merchants (excludes disabled merchants)
+## Get All Merchants (excludes disabled merchants)
 ```
 $merchantList = new MerchantList($wfClient);
 while ($merchant = $merchantList->getCurrentMerchant()){
@@ -57,4 +34,28 @@ while ($merchant = $merchantList->getCurrentMerchant()){
         break;
     }
 }
+```
+
+## Get Commissions Summary
+```
+$commissionSummary = $wfClient->getCommissionSummary();
+var_dump($commissionSummary);
+```
+
+## Get Commissions Detail List
+```
+$commissions = $wfClient->getCommissionDetails();
+var_dump($commissions);
+```
+
+## Get Click Stats
+```
+$clicks = $wfClient->getClickStatsByDay('2018-01-01');
+var_dump($clicks);
+```
+
+## Create Vanity URL (i.e. http://wild.link/walmart/abc123)
+```
+$vanityUrl = $wfClient->getVanityUrl('https://www.walmart.com/ip/VIZIO-24-Class-HD-720P-LED-TV-D24hn-G9/782959488');
+var_dump($vanityUrl);
 ```
