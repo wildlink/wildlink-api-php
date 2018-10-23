@@ -10,20 +10,52 @@ Wildlink API PHP client example.  See also:
 Usage
 ------------------
 
+## Instantiation
 ```
-$wf = new WildlinkClient($app_id, $secret);
-echo $wf->uuid;
-echo $wf->device_token;
+$wfClient = new WildlinkClient($app_id, $secret);
+echo $wfClient->uuid;
+echo $wfClient->device_token;
 ```
 
-- merchants
+## Get Specific Merchant
 ```
-$merchants = $wf->getMerchantsById(5477615);
+$merchants = $wfClient->getMerchantsById(5477615);
 var_dump($merchants);
 ```
 
-- commissionDetails
+## Get All Merchants (excludes disabled merchants)
 ```
-$commissions = $wf->getCommissionDetails();
+$merchantList = new MerchantList($wfClient);
+while ($merchant = $merchantList->getCurrentMerchant()){
+    var_dump($merchant);
+    if ($merchantList->hasNextMerchant()){
+        $merchantList->getNextMerchant();
+    } else {
+        break;
+    }
+}
+```
+
+## Get Commissions Summary
+```
+$commissionSummary = $wfClient->getCommissionSummary();
+var_dump($commissionSummary);
+```
+
+## Get Commissions Detail List
+```
+$commissions = $wfClient->getCommissionDetails();
 var_dump($commissions);
+```
+
+## Get Click Stats
+```
+$clicks = $wfClient->getClickStatsByDay('2018-01-01');
+var_dump($clicks);
+```
+
+## Create Vanity URL (i.e. http://wild.link/walmart/abc123)
+```
+$vanityUrl = $wfClient->getVanityUrl('https://www.walmart.com/ip/VIZIO-24-Class-HD-720P-LED-TV-D24hn-G9/782959488');
+var_dump($vanityUrl);
 ```
