@@ -206,7 +206,7 @@ class WildlinkClient
 
     public function getPagedEnabledMerchants()
     {
-        if (!$this->merchantListCursor){
+        if (!isset($this->merchantListCursor)){
             $this->merchantListCursor = '';
         }
 
