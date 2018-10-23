@@ -70,9 +70,9 @@ $merchantCounter = 0;
 while ($merchant = $merchantList->getCurrentMerchant()){
     out($merchantCounter);
     out($merchant);
+    $merchantCounter++;
     if ($merchantList->hasNextMerchant()){
         $merchantList->getNextMerchant();
-        $merchantCounter++;
     } else {
         break;
     }
@@ -83,6 +83,7 @@ while ($merchant = $merchantList->getCurrentMerchant()){
 $merchantCounter = 0;
 $merchant = $merchantList->getCurrentMerchant();
 out($merchant);
+$merchantCounter++;
 while ($merchantList->hasNextMerchant()){
     $merchant = $merchantList->getNextMerchant();
     out($merchant);
