@@ -65,7 +65,7 @@ class WildlinkClient
         }
 
         if ($function == 'getEnabledMerchants'){
-            $api_info->endpoint = '/v2/merchant/?disabled=false&cursor=:cursor';
+            $api_info->endpoint = '/v2/merchant/?disabled=false&cursor=:cursor&limit=:limit';
             $api_info->method = 'GET';
         }
 
@@ -191,7 +191,8 @@ class WildlinkClient
             $merchants += $result->Merchants;
             while ($result->NextCursor){
                 $result = $this->request('getEnabledMerchants', [
-                    'cursor' => $result->NextCursor
+                    'cursor' => $result->NextCursor,
+                    'limit' => 500
                 ]);
                 if ($result->Merchants){
                     $merchants = array_merge($merchants, $result->Merchants);
@@ -205,16 +206,20 @@ class WildlinkClient
 
     public function getPagedEnabledMerchants()
     {
-        // FIXME: we may have multiple cursors to maintain in the future
-        if (!$this->cursor){
-            $this->cursor = '';
+        if (!$this->merchantListCursor){
+            $this->merchantListCursor = '';
         }
 
         $result = $this->request('getEnabledMerchants', [
-            'cursor' => $this->cursor
+            'cursor' => $this->merchantListCursor,
+            'limit' => 500
         ]);
-        $this->cursor = $result->NextCursor;
-        return $result->Merchants;
+        if (!isset($result->Merchants)){
+            return $result;
+        } else {
+            $this->merchantListCursor = $result->NextCursor;
+            return $result->Merchants;
+        }
     }
 
     // COMMISSION functions

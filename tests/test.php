@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
 use WildlinkApi\WildlinkClient;
+use WildlinkApi\MerchantList;
 
 function out($str, $type = ''){
     $color_array['error'] = "\033[31m";
@@ -61,38 +62,39 @@ out("testing getting multiple merchants by ID (5482877,5478747)");
 $multipleMerchants = $wfClient->getMerchantsById(array(5482877,5478747));
 out($multipleMerchants);
 
-out("testing refreshing all enabled merchants");
-$allMerchants = $wfClient->getAllEnabledMerchants();
-#out($allMerchants);
+out("stepping through merchants");
+$merchantList = new MerchantList($wfClient);
 
-out("total merchant count: " . count($allMerchants));
-if (count($allMerchants) > 1000){
+// method 1
+$merchantCounter = 0;
+while ($merchant = $merchantList->getCurrentMerchant()){
+    out($merchantCounter);
+    out($merchant);
+    if ($merchantList->hasNextMerchant()){
+        $merchantList->getNextMerchant();
+        $merchantCounter++;
+    } else {
+        break;
+    }
+}
+
+// method 2
+/*
+$merchantCounter = 0;
+$merchant = $merchantList->getCurrentMerchant();
+out($merchant);
+while ($merchantList->hasNextMerchant()){
+    $merchant = $merchantList->getNextMerchant();
+    out($merchant);
+    $merchantCounter++;
+}
+*/
+
+out("total merchant count: " . $merchantCounter);
+if ($merchantCounter > 1000){
     out("PASS", 'success');
 } else {
     out("FAIL", 'error');
-}
-
-out("testing getting first two pages of enabled merchants");
-
-out("page 1 (first record):");
-$pageOfMerchants1 = $wfClient->getPagedEnabledMerchants();
-out($pageOfMerchants1[0]);
-#out($pageOfMerchants1);
-
-out("page 2 (first record):");
-$pageOfMerchants2 = $wfClient->getPagedEnabledMerchants();
-out($pageOfMerchants2[0]);
-#out($pageOfMerchants1);
-
-
-if (!$pageOfMerchants1[0]->Name){
-    out("FAIL: no Name value for first record of first page of merchants", 'error');
-} elseif (!$pageOfMerchants2[0]->Name){
-    out("FAIL: no Name value for first record of second page of merchants", 'error');
-} elseif ($pageOfMerchants1[0]->Name == $pageOfMerchants2[0]->Name){
-    out("FAIL: first record from first and second page of merchants have the same name", 'error');
-} else {
-    out("PASS", 'success');
 }
 
 out("testing getting commission details");
