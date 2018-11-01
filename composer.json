@@ -1,8 +1,8 @@
 {
     "name": "wildlink/wildlink-api-php",
-    "description": "A simple PHP interface for the Wildlink API",
+    "description": "A simple PHP interface for the Wildlink API (learn more at https://www.wildlink.me/",
     "license": "MIT",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "type": "library",
     "authors": [
         {
