@@ -65,7 +65,7 @@ out($multipleMerchants);
 out("stepping through merchants");
 $merchantList = new MerchantList($wfClient);
 
-// method 1
+// method 1 for getting all merchants
 $merchantCounter = 0;
 while ($merchant = $merchantList->getCurrentMerchant()){
     out($merchantCounter);
@@ -78,7 +78,7 @@ while ($merchant = $merchantList->getCurrentMerchant()){
     }
 }
 
-// method 2
+// method 2 for getting all merchants
 /*
 $merchantCounter = 0;
 $merchant = $merchantList->getCurrentMerchant();
@@ -98,10 +98,19 @@ if ($merchantCounter > 1000){
     out("FAIL", 'error');
 }
 
+// get all commissions for app (across all devices)
+$commissions_since_date = '2018-07-01';
+$commissions_since_limit = 10;
+out("testing get all comissions for app since $commissions_since_date, limit $commissions_since_limit");
+$allCommissionsSince = $wfClient->getAppCommissionsSince($commissions_since_date, $commissions_since_limit);
+out($allCommissionsSince);
+
+// get commission details for device
 out("testing getting commission details");
 $commissionDetails = $wfClient->getCommissionDetails();
 out($commissionDetails);
 
+// get commission summary for device
 out("testing getting commission summary");
 $commissionSummary = $wfClient->getCommissionSummary();
 out($commissionSummary);

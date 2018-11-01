@@ -80,6 +80,11 @@ class WildlinkClient
             $api_info->method = 'GET';
         }
 
+        if ($function == 'getAppCommissionsSince'){
+            $api_info->endpoint = '/v2/commission?start_modified_date=:modified_since&limit=:limit';
+            $api_info->method = 'GET';
+        }
+
         // CLICKS functions
         if ($function == 'getClickStats'){
             $api_info->endpoint = '/v2/device/stats/clicks?by=:by&start=:start&end=:end';
@@ -232,6 +237,15 @@ class WildlinkClient
     public function getCommissionDetails()
     {
         $result = $this->request('getCommissionDetails');
+        return $result;
+    }
+
+    public function getAppCommissionsSince($modified_since, $limit = '')
+    {
+        $result = $this->request('getAppCommissionsSince', [
+            'modified_since' => $modified_since,
+            'limit' => $limit
+        ]);
         return $result;
     }
 
