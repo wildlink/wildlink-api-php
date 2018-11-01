@@ -1,14 +1,11 @@
-wildlink-api-php
-==================
+# wildlink-api-php
 
-Wildlink API PHP client example.  See also:
+PHP client for working with Wildfire/Wildlink APIs. Convert product and brand links into affiliate versions to generate revenue.  Learn more at https://www.wildlink.me/
 
+See also:
 * [Getting Started](https://blog.wildlink.me/developers/getting-started-php-library/)
 * [SDK Reference](https://blog.wildlink.me/developers/wildlink-php-library-reference/)
 
-
-Usage
-------------------
 
 ## Instantiation
 ```php
@@ -25,7 +22,7 @@ echo $wfClient->uuid;
 echo $wfClient->device_token;
 ```
 
-## Get Specific Merchant(s)
+## Get Specific Merchant(s) Metadata
 The getMerchants call can be used to fetch metadata (including images) for a given merchant.  This call can take either a single integer or an array of integers.
 
 ```php
@@ -39,7 +36,7 @@ var_dump($multipleMerchants);
 ```
 
 ### Example return
-```php
+```
 Array
 (
     [0] => stdClass Object
@@ -105,7 +102,7 @@ Array
 )
 ```
 
-## Get All Merchants (excludes disabled merchants)
+## Get All Merchants (excludes disabled merchants) metadata
 
 ```php
 $merchantList = new MerchantList($wfClient);
@@ -120,7 +117,7 @@ while ($merchant = $merchantList->getCurrentMerchant()){
 ```
 
 ### Example return
-```php
+```
 stdClass Object
 (
     [ID] => 5520185
@@ -164,7 +161,7 @@ var_dump($allCommissionsSince);
 ```
 
 ### Example return
-```php
+```
 stdClass Object
 (
     [Commissions] => Array
@@ -235,7 +232,7 @@ var_dump($commissionSummary);
 ```
 
 ### Example return
-```php
+```
 stdClass Object
 (
     [PendingAmount] => 0.00
@@ -245,13 +242,16 @@ stdClass Object
 ```
 
 ## Get Commissions Detail List
+If you’re including your end users in Wildlink compensation, you can use this call to fetch a detailed record of every commission that Wildlink is aware of for the client/device (including each commission’s status).
+
+
 ```php
 $commissions = $wfClient->getCommissionDetails();
 var_dump($commissions);
 ```
 
 ### Example return
-```php
+```
 Array (
     [0] => stdClass Object
         (
@@ -280,13 +280,16 @@ Array (
 ```
 
 ## Get Click Stats
+If appropriate, you can display total clicks for a given device for a time range (by day, month or year).  This method takes a start and end date value (the end value is optional).
+
+
 ```php
 $clicks = $wfClient->getClickStatsByDay('2018-01-01');
 var_dump($clicks);
 ```
 
 ### Example return
-```php
+```
 stdClass Object
 (
    [2018-10-15T00:00:00Z] => 3
@@ -296,6 +299,9 @@ stdClass Object
 
 
 ## Create Vanity URL (i.e. http://wild.link/walmart/abc123)
+Convert a URL (to a product page, listing page, etc.) to a wild.link URL with embedded tracking for the authenticated device.
+
+
 ```php
 $vanityUrl = $wfClient->getVanityUrl('https://www.walmart.com/ip/VIZIO-24-Class-HD-720P-LED-TV-D24hn-G9/782959488');
 var_dump($vanityUrl);
