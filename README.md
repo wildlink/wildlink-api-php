@@ -308,7 +308,7 @@ var_dump($vanityUrl);
 ```
 
 ### Example return
-```php
+```
 stdClass Object
 (
     [OriginalURL] => https://www.walmart.com/ip/VIZIO-24-Class-HD-720P-LED-TV-D24hn-G9/782959488
