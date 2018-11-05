@@ -68,7 +68,7 @@ out("stepping through merchants");
 $merchantList = new MerchantList($wfClient);
 
 // method 1 for getting all merchants
-/*$merchantCounter = 0;
+$merchantCounter = 0;
 while ($merchant = $merchantList->getCurrentMerchant()){
     out($merchantCounter);
     out($merchant);
@@ -78,7 +78,7 @@ while ($merchant = $merchantList->getCurrentMerchant()){
     } else {
         break;
     }
-}*/
+}
 
 // method 2 for getting all merchants
 /*
