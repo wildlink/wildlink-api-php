@@ -4,34 +4,36 @@ namespace WildlinkApi;
 
 class WildlinkClient
 {
-    public function __construct($app_id, $secret, $uuid = '', $device_token = '')
+    public function __construct($app_id, $secret, $device_key = '', $device_token = '')
     {
         $this->app_id = $app_id;
         $this->secret = $secret;
 
-        if ($uuid && $device_token){
-            // uuid and device token provided, so just store the values
-            $this->uuid = $uuid;
+        if ($device_key && $device_token){
+            // device_key and device_token provided, so just store the values
+            $this->device_key = $device_key;
             $this->device_token = $device_token;
         } else {
-            // generate a device token, with the UUID if we have it
-            $result = $this->makeDeviceToken($uuid);
+            // generate a device token, with the device_key if we have it
+            $result = $this->makeDeviceToken($device_key);
 
             if ($result->DeviceToken){
                 $this->device_token = $result->DeviceToken;
             }
-            if ($result->UUID){
-                $this->uuid = $result->UUID;
+            if ($result->DeviceKey){
+                $this->uuid = $result->DeviceKey; // for legacy support... should remove documentation for this and retire it in the future
+                $this->device_key = $result->DeviceKey;
+                $this->device_id = $result->DeviceID;
             }
         }
     }
 
-    public function makeDeviceToken($uuid = '')
+    public function makeDeviceToken($device_key = '')
     {
         $date_time = date('Y-m-d H:i:sZ', time());
         $post_obj = (object) [];
-        if ($uuid){
-            $post_obj->UUID = $uuid;
+        if ($device_key){
+            $post_obj->DeviceKey = $device_key;
             $post_obj->OS = "Linux";
         } else {
             $post_obj->OS = "Linux";
@@ -104,7 +106,7 @@ class WildlinkClient
     {
         #$vars['debug'] = true;
 
-        $api_url_base = "https://api.wfi.re";
+        $api_url_base = "https://dev-api.wfi.re";
 
         $api_info = $this->getEndpointInfo($function);
         $api_url = $api_url_base . $api_info->endpoint;

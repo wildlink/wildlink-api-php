@@ -27,7 +27,7 @@ out("testing auth token generation");
 // instantiate a Wildlink Client
 $appID = @$argv[1]; // get app_id from cli
 $secret = @$argv[2]; // get secret from cli
-$uuid = @$argv[3]; // optional UUID from cli to start new session with previously created device
+$deviceKey = @$argv[3]; // optional device_key from cli to start new session with previously created device
 $deviceToken = @$argv[4]; // optional deviceToken from cli to start new session with previously created deviceToken
 
 if (!$appID || !$secret){
@@ -36,17 +36,19 @@ if (!$appID || !$secret){
 
 out("connecting to Wildlink with app id $appID and secret $secret");
 
-if ($uuid && $deviceToken){
-    $wfClient = new WildlinkClient($appID, $secret, $uuid, $deviceToken);
-} elseif ($uuid){
-    // OPTIONAL : instantiate a Wildlink Client with a UUID to create a new session with an existing  device
-    $wfClient = new WildlinkClient($appID, $secret, $uuid);
+if ($deviceKey && $deviceToken){
+    $wfClient = new WildlinkClient($appID, $secret, $deviceKey, $deviceToken);
+} elseif ($deviceKey){
+    // OPTIONAL : instantiate a Wildlink Client with a deviceKey to create a new session with an existing  device
+    $wfClient = new WildlinkClient($appID, $secret, $deviceKey);
 } else {
     $wfClient = new WildlinkClient($appID, $secret);
 }
 
-// Note: Wildlink web service will create and return a UUID unless one is passed in
-out("UUID: " . $wfClient->uuid);
+// Note: Wildlink web service will create and return a deviceKey unless one is passed in
+out("Device ID: " . $wfClient->device_id);
+//out("UUID: " . $wfClient->uuid); // uuid is deprecated
+out("DeviceKey: " . $wfClient->device_key);
 
 if ($wfClient->device_token){
     out("device token: " . $wfClient->device_token);
@@ -66,7 +68,7 @@ out("stepping through merchants");
 $merchantList = new MerchantList($wfClient);
 
 // method 1 for getting all merchants
-$merchantCounter = 0;
+/*$merchantCounter = 0;
 while ($merchant = $merchantList->getCurrentMerchant()){
     out($merchantCounter);
     out($merchant);
@@ -76,7 +78,7 @@ while ($merchant = $merchantList->getCurrentMerchant()){
     } else {
         break;
     }
-}
+}*/
 
 // method 2 for getting all merchants
 /*
@@ -149,8 +151,8 @@ out("re-request click stats");
 $clicksAfter = $wfClient->getClickStatsByDay('2018-01-01');
 out($clicksAfter);
 
-out("\nYou can re-run with UUID as\nphp tests/test.php $appID '$secret' '$wfClient->uuid'\n", 'success');
+out("\nYou can re-run with deviceKey as\nphp tests/test.php $appID '$secret' '$wfClient->device_key'\n", 'success');
 
-out("\nYou can re-run with UUID and device token as\nphp tests/test.php $appID '$secret' '$wfClient->uuid' '$wfClient->device_token'\n", 'success');
+out("\nYou can re-run with deviceKey and device token as\nphp tests/test.php $appID '$secret' '$wfClient->device_key' '$wfClient->device_token'\n", 'success');
 
 out("complete.", 'success'); exit;

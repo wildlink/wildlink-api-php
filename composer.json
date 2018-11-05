@@ -2,7 +2,7 @@
     "name": "wildlink/wildlink-api-php",
     "description": "A simple PHP interface for the Wildlink API (learn more at https://www.wildlink.me/)",
     "license": "MIT",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "type": "library",
     "authors": [
         {
