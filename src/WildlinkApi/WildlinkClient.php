@@ -106,7 +106,7 @@ class WildlinkClient
     {
         #$vars['debug'] = true;
 
-        $api_url_base = "https://dev-api.wfi.re";
+        $api_url_base = "https://api.wfi.re";
 
         $api_info = $this->getEndpointInfo($function);
         $api_url = $api_url_base . $api_info->endpoint;
