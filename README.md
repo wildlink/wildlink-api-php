@@ -4,7 +4,6 @@ PHP client for working with Wildfire/Wildlink APIs. Convert product and brand li
 
 See also:
 * [Getting Started](https://blog.wildlink.me/developers/getting-started-php-library/)
-* [SDK Reference](https://blog.wildlink.me/developers/wildlink-php-library-reference/)
 
 
 ## Instantiation
