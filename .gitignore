@@ -1,2 +1,3 @@
 src/WildlinkApi/data/*
 /vendor
+composer.lock
