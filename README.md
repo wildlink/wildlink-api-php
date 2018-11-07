@@ -4,7 +4,6 @@ PHP client for working with Wildfire/Wildlink APIs. Convert product and brand li
 
 See also:
 * [Getting Started](https://blog.wildlink.me/developers/getting-started-php-library/)
-* [SDK Reference](https://blog.wildlink.me/developers/wildlink-php-library-reference/)
 
 
 ## Instantiation
@@ -13,14 +12,16 @@ See also:
 $wfClient = new WildlinkClient($app_id, $secret);
 
 // create a new "session" for a previously created device (fetches a new deviceToken from Wildfire server)
-$wfClient = new WildlinkClient($app_id, $secret, $uuid);
+$wfClient = new WildlinkClient($app_id, $secret, $device_key);
 
-// prepare to make a new request with a previously stored device ID and auth token (no Wildfire server hit)
-$wfClient = new WildlinkClient($app_id, $secret, $uuid, $deviceToken);
+// prepare to make a new request with a previously stored device key and device auth token (no Wildfire server hit)
+$wfClient = new WildlinkClient($app_id, $secret, $device_key, $device_token);
 
-echo $wfClient->uuid;
-echo $wfClient->device_token;
+echo $wfClient->device_key; // Device Key is used for authing the device in the future - it doesn't expire
+echo $wfClient->device_id; // Device ID is used for referencing device in reporting data
+echo $wfClient->device_token; // Device Token is used for authing device - it expires
 ```
+
 
 ## Get Specific Merchant(s) Metadata
 The getMerchants call can be used to fetch metadata (including images) for a given merchant.  This call can take either a single integer or an array of integers.
@@ -171,7 +172,7 @@ stdClass Object
                     [ID] => 4015
                     [ApplicationID] => 3
                     [MerchantID] => 5478747
-                    [DeviceUUID] => D9F3D3DF-E2C5-43A0-9BA5-5F47EEB964EF
+                    [DeviceKey] => D9F3D3DF-E2C5-43A0-9BA5-5F47EEB964EF
                     [SaleAmount] => 319.3
                     [Amount] => 0
                     [Status] => DISQUALIFIED
@@ -185,7 +186,7 @@ stdClass Object
                     [ID] => 4013
                     [ApplicationID] => 3
                     [MerchantID] => 5478049
-                    [DeviceUUID] => 95276881-d08f-44b3-b871-641485c719a9
+                    [DeviceKey] => 95276881-d08f-44b3-b871-641485c719a9
                     [SaleAmount] => 118.93
                     [Amount] => 5.9465
                     [Status] => PAID
@@ -199,7 +200,7 @@ stdClass Object
                     [ID] => 4010
                     [ApplicationID] => 3
                     [MerchantID] => 5477615
-                    [DeviceUUID] => 17489795-4a7f-4773-b8d0-5c90d86ce88b
+                    [DeviceKey] => 17489795-4a7f-4773-b8d0-5c90d86ce88b
                     [SaleAmount] => 6309.95
                     [Amount] => 0
                     [Status] => DISQUALIFIED
@@ -210,8 +211,8 @@ stdClass Object
 
         )
 
-    [PrevCursor] =>
-    [NextCursor] =>
+    [PrevCursor] => ...
+    [NextCursor] => ...
 )
 ```
 
