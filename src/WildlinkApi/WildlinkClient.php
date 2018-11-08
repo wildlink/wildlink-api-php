@@ -92,6 +92,11 @@ class WildlinkClient
             $api_info->method = 'GET';
         }
 
+        if ($function == 'resendCommissionCallback'){
+            $api_info->endpoint = '/v2/commission/:id/send-callback';
+            $api_info->method = 'GET';
+        }
+
         // CLICKS functions
         if ($function == 'getClickStats'){
             $api_info->endpoint = '/v2/device/stats/clicks?by=:by&start=:start&end=:end';
@@ -298,6 +303,15 @@ class WildlinkClient
         ]);
         return $result;
     }
+
+    public function resendCommissionCallback($commission_id)
+    {
+        $result = $this->request('resendCommissionCallback', [
+            'id' => $commission_id
+        ]);
+        return $result;
+    }
+
 
     // CLICKS functions
     public function getClickStats($start, $end = '')

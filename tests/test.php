@@ -125,6 +125,11 @@ out("testing get all comissions for app since $commissions_since_date, limit $co
 $allCommissionsSince = $wfClient->getAppCommissionsSince($commissions_since_date, $commissions_since_limit);
 out($allCommissionsSince);
 
+// re-send most recent commission record callback
+$commission_id = $allCommissionsSince->Commissions[0]->ID;
+out("resending oldest commission id $commission_id");
+$wfClient->resendCommissionCallback($commission_id);
+
 // get commission details for device
 out("testing getting commission details");
 $commissionDetails = $wfClient->getCommissionDetails();
