@@ -71,6 +71,11 @@ class WildlinkClient
             $api_info->method = 'GET';
         }
 
+        if ($function == 'getDisabledMerchants'){
+            $api_info->endpoint = '/v2/merchant/?disabled=true&cursor=:cursor&limit=:limit';
+            $api_info->method = 'GET';
+        }
+
         // COMMISSION functions
         if ($function == 'getCommissionSummary'){
             $api_info->endpoint = '/v2/device/stats/commission-summary';
@@ -211,6 +216,31 @@ class WildlinkClient
         }
     }
 
+    public function getAllDisabledMerchants()
+    {
+        $disabledMerchants = [];
+
+        $result = $this->request('getDisabledMerchants', [
+            'cursor' => ''
+        ]);
+        if ($result->Merchants){
+            // request next pages until there are none left
+            $disabledMerchants += $result->Merchants;
+            while ($result->NextCursor){
+                $result = $this->request('getDisabledMerchants', [
+                    'cursor' => $result->NextCursor,
+                    'limit' => 500
+                ]);
+                if ($result->Merchants){
+                    $disabledMerchants = array_merge($disabledMerchants, $result->Merchants);
+                }
+            }
+            return $disabledMerchants;
+        } else {
+            return $result;
+        }
+    }
+
     public function getPagedEnabledMerchants()
     {
         if (!isset($this->merchantListCursor)){
@@ -218,6 +248,24 @@ class WildlinkClient
         }
 
         $result = $this->request('getEnabledMerchants', [
+            'cursor' => $this->merchantListCursor,
+            'limit' => 500
+        ]);
+        if (!isset($result->Merchants)){
+            return $result;
+        } else {
+            $this->merchantListCursor = $result->NextCursor;
+            return $result->Merchants;
+        }
+    }
+
+    public function getPagedDisabledMerchants()
+    {
+        if (!isset($this->merchantListCursor)){
+            $this->merchantListCursor = '';
+        }
+
+        $result = $this->request('getDisabledMerchants', [
             'cursor' => $this->merchantListCursor,
             'limit' => 500
         ]);

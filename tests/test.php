@@ -4,6 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 
 use WildlinkApi\WildlinkClient;
 use WildlinkApi\MerchantList;
+use WildlinkApi\DisabledMerchantList;
 
 function out($str, $type = ''){
     $color_array['error'] = "\033[31m";
@@ -70,8 +71,8 @@ $merchantList = new MerchantList($wfClient);
 // method 1 for getting all merchants
 $merchantCounter = 0;
 while ($merchant = $merchantList->getCurrentMerchant()){
-    out($merchantCounter);
-    out($merchant);
+    #out($merchantCounter);
+    #out($merchant);
     $merchantCounter++;
     if ($merchantList->hasNextMerchant()){
         $merchantList->getNextMerchant();
@@ -99,6 +100,23 @@ if ($merchantCounter > 1000){
 } else {
     out("FAIL", 'error');
 }
+
+out("stepping through DISABLED merchants");
+$disabledMerchantList = new DisabledMerchantList($wfClient);
+$disabledMerchantCounter = 0;
+while ($merchant = $disabledMerchantList->getCurrentMerchant()){
+    #out($disabledMerchantCounter);
+    #out($merchant);
+    $disabledMerchantCounter++;
+    if ($disabledMerchantList->hasNextMerchant()){
+        $disabledMerchantList->getNextMerchant();
+    } else {
+        break;
+    }
+}
+
+out("total DISABLED merchant count: " . $merchantCounter);
+
 
 // get all commissions for app (across all devices)
 $commissions_since_date = '2018-07-01';
