@@ -4,6 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 
 use WildlinkApi\WildlinkClient;
 use WildlinkApi\MerchantList;
+use WildlinkApi\CommissionList;
 use WildlinkApi\DisabledMerchantList;
 
 function out($str, $type = ''){
@@ -114,16 +115,24 @@ while ($merchant = $disabledMerchantList->getCurrentMerchant()){
         break;
     }
 }
-
 out("total DISABLED merchant count: " . $merchantCounter);
 
-
 // get all commissions for app (across all devices)
-$commissions_since_date = '2018-07-01';
-$commissions_since_limit = 10;
-out("testing get all comissions for app since $commissions_since_date, limit $commissions_since_limit");
-$allCommissionsSince = $wfClient->getAppCommissionsSince($commissions_since_date, $commissions_since_limit);
-out($allCommissionsSince);
+$commissions_since_date = '2018-01-01';
+out("testing get all comissions for app since $commissions_since_date");
+$commissionList = new CommissionList($wfClient, $commissions_since_date);
+
+$commissionCounter = 0;
+while ($commission = $commissionList->getCurrentCommission()){
+    out($commissionCounter);
+    out($commission);
+    $commissionCounter++;
+    if ($commissionList->hasNextCommission()){
+        $commissionList->getNextCommission();
+    } else {
+        break;
+    }
+}
 
 // re-send most recent commission record callback
 $commission_id = $allCommissionsSince->Commissions[0]->ID;

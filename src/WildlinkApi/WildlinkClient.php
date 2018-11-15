@@ -92,6 +92,11 @@ class WildlinkClient
             $api_info->method = 'GET';
         }
 
+        if ($function == 'getAppCommissionsByCursor'){
+            $api_info->endpoint = '/v2/commission?cursor=:cursor&limit=:limit';
+            $api_info->method = 'GET';
+        }
+
         if ($function == 'resendCommissionCallback'){
             $api_info->endpoint = '/v2/commission/:id/send-callback';
             $api_info->method = 'GET';
@@ -209,7 +214,7 @@ class WildlinkClient
             while ($result->NextCursor){
                 $result = $this->request('getEnabledMerchants', [
                     'cursor' => $result->NextCursor,
-                    'limit' => 500
+                    'limit' => 500 // max limit = 500
                 ]);
                 if ($result->Merchants){
                     $merchants = array_merge($merchants, $result->Merchants);
@@ -234,7 +239,7 @@ class WildlinkClient
             while ($result->NextCursor){
                 $result = $this->request('getDisabledMerchants', [
                     'cursor' => $result->NextCursor,
-                    'limit' => 500
+                    'limit' => 500 // max limit = 500
                 ]);
                 if ($result->Merchants){
                     $disabledMerchants = array_merge($disabledMerchants, $result->Merchants);
@@ -254,7 +259,7 @@ class WildlinkClient
 
         $result = $this->request('getEnabledMerchants', [
             'cursor' => $this->merchantListCursor,
-            'limit' => 500
+            'limit' => 500 // max limit = 500
         ]);
         if (!isset($result->Merchants)){
             return $result;
@@ -272,7 +277,7 @@ class WildlinkClient
 
         $result = $this->request('getDisabledMerchants', [
             'cursor' => $this->merchantListCursor,
-            'limit' => 500
+            'limit' => 500 // max limit = 500
         ]);
         if (!isset($result->Merchants)){
             return $result;
@@ -297,11 +302,20 @@ class WildlinkClient
 
     public function getAppCommissionsSince($modified_since, $limit = '')
     {
+        if (!isset($this->commissionListCursor)){
+            $this->commissionListCursor = '';
+        }
+
         $result = $this->request('getAppCommissionsSince', [
             'modified_since' => $modified_since,
             'limit' => $limit
         ]);
-        return $result;
+        if (!isset($result->Commissions)){
+            return $result;
+        } else {
+            $this->commissionListCursor = $result->NextCursor;
+            return $result->Commissions;
+        }
     }
 
     public function resendCommissionCallback($commission_id)
@@ -310,6 +324,24 @@ class WildlinkClient
             'id' => $commission_id
         ]);
         return $result;
+    }
+
+    public function getPagedCommissions()
+    {
+        if (!isset($this->commissionListCursor)){
+            $this->commissionListCursor = '';
+        }
+
+        $result = $this->request('getAppCommissionsByCursor', [
+            'cursor' => $this->commissionListCursor,
+            'limit' => 100 // max limit = 100
+        ]);
+        if (!isset($result->Commissions)){
+            return $result;
+        } else {
+            $this->commissionListCursor = $result->NextCursor;
+            return $result->Commissions;
+        }
     }
 
 
