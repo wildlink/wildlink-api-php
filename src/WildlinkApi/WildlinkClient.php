@@ -76,6 +76,11 @@ class WildlinkClient
             $api_info->method = 'GET';
         }
 
+        if ($function == 'getMerchantCommissionRates'){
+            $api_info->endpoint = '/v2/merchant/:id/commission';
+            $api_info->method = 'GET';
+        }
+
         // COMMISSION functions
         if ($function == 'getCommissionSummary'){
             $api_info->endpoint = '/v2/device/stats/commission-summary';
@@ -285,6 +290,12 @@ class WildlinkClient
             $this->merchantListCursor = $result->NextCursor;
             return $result->Merchants;
         }
+    }
+
+    public function getMerchantCommissionRates($id)
+    {
+        $result = $this->request('getMerchantCommissionRates', array("id" => $id));
+        return $result;
     }
 
     // COMMISSION functions

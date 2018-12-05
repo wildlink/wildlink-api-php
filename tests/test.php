@@ -62,6 +62,10 @@ out("testing getting single merchant by ID (5477615)");
 $singleMerchant = $wfClient->getMerchantsById(5477615);
 out($singleMerchant);
 
+out("testing fetch of commission rate data for a merchant (5477615)");
+$commissionRates = $wfClient->getMerchantCommissionRates(5477615);
+out($commissionRates);
+
 out("testing getting multiple merchants by ID (5482877,5478747)");
 $multipleMerchants = $wfClient->getMerchantsById(array(5482877,5478747));
 out($multipleMerchants);
