@@ -256,6 +256,8 @@ The possible values for Status are:
 Alternatively to getting back a single array of commissions, you can instead use the CommissionList object to cycle through each record.  This has the advantage of having a smaller memory footprint as only a single "page" of results are loaded into memory at any given time.  The returned data is the same as the getAppCommissionsSince method call and it takes the same *since_modified_date* parameter.
 
 ```php
+use WildlinkApi\CommissionList;
+
 $commissionList = new CommissionList($wfClient, '2018-12-01');
 
 while ($commission = $commissionList->getCurrentCommission()){
