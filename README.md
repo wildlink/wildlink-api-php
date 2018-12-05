@@ -5,8 +5,16 @@ PHP client for working with Wildfire/Wildlink APIs. Convert product and brand li
 See also:
 * [Getting Started](https://blog.wildlink.me/developers/getting-started-php-library/)
 
+## Installation
+Installation through Composer is recommended.  See the Getting Started guide above if you're new to installing libraries via Composer.
 
-## Instantiation
+```composer require wildlink/wildlink-api-php```
+
+
+## Usage
+
+### Instantiation
+
 ```php
 // minimum auth, NOTE: this creates a new device
 $wfClient = new WildlinkClient($app_id, $secret);
@@ -23,7 +31,7 @@ echo $wfClient->device_token; // Device Token is used for authing device - it ex
 ```
 
 
-## Get Specific Merchant(s) Metadata
+### Get Specific Merchant(s) Metadata
 The getMerchants call can be used to fetch metadata (including images) for a given merchant.  This call can take either a single integer or an array of integers.
 
 ```php
@@ -36,7 +44,7 @@ $multipleMerchants = $wfClient->getMerchantsById(array(5482877,5478747));
 var_dump($multipleMerchants);
 ```
 
-### Example return
+#### Example return
 ```
 Array
 (
@@ -103,7 +111,7 @@ Array
 )
 ```
 
-## Get Commission Rate Data for a Merchant
+### Get Commission Rate Data for a Merchant
 The getMerchantCommissionRates call can be used to fetch commission rate information for a given merchant.  Some merchants have a single commission rate and others have a segmented series of rates (sometimes by product category, sometimes by other attributes).  The commission rate in the return data takes into account your agreed-upon commission split (so you see your commission amount after Wildfire Systems has taken their share).  Some commission terms are percentage rates while others are flat amounts.  Where there are flat amounts, a currency code will be included.  Wildlink doesn't convert currencies in this context at this time.  Wildlink always pays out in USD and will convert the currencies before payment is issued to you.  When available, a default commission rate will be denoted, but note that not all merchants have a specified default currency.
 
 ```php
@@ -111,7 +119,7 @@ $singleMerchantCommissionRates = $wfClient->getMerchantCommissionRates(5477615);
 var_dump($singleMerchantCommissionRates);
 ```
 
-### Example return
+#### Example return
 ```
 Array
 (
@@ -128,7 +136,7 @@ Array
 ```
 
 
-## Get All Merchants (excludes disabled merchants) metadata
+### Get All Merchants (excludes disabled merchants) metadata
 
 ```php
 $merchantList = new MerchantList($wfClient);
@@ -142,7 +150,7 @@ while ($merchant = $merchantList->getCurrentMerchant()){
 }
 ```
 
-### Example return
+#### Example return
 ```
 stdClass Object
 (
@@ -178,7 +186,7 @@ stdClass Object
 )
 ```
 
-## Get App Commissions Detail List (Across all devices)
+### Get App Commissions Detail List (Across all devices)
 When you want to fetch all commissions, across all devices (i.e. for syncing your backend with Wildfire's) you can use this call to get all changes to commission records since a given date.
 
 ```php
@@ -186,7 +194,7 @@ $allCommissionsSince = $wfClient->getAppCommissionsSince('2018-07-01');
 var_dump($allCommissionsSince);
 ```
 
-### Example return
+#### Example return
 ```
 Array
 (
@@ -244,7 +252,7 @@ The possible values for Status are:
 1. **PAID** – Payment has been made to either the individual user or partner company (in the case where the partner is handling payments between Wildlink and the end user).
 
 
-## Alternative Method for Paging Through Commissions
+#### Alternative Method for Paging Through Commissions
 Alternatively to getting back a single array of commissions, you can instead use the CommissionList object to cycle through each record.  This has the advantage of having a smaller memory footprint as only a single "page" of results are loaded into memory at any given time.  The returned data is the same as the getAppCommissionsSince method call and it takes the same *since_modified_date* parameter.
 
 ```php
@@ -261,7 +269,7 @@ while ($commission = $commissionList->getCurrentCommission()){
 ```
 
 
-## Get Commissions Summary
+### Get Commissions Summary
 When you want to display a high level summary of the earnings to a user (assuming you are passing compensation along to your end users) you can call getCommissionSummary.
 
 ```php
@@ -269,7 +277,7 @@ $commissionSummary = $wfClient->getCommissionSummary();
 var_dump($commissionSummary);
 ```
 
-### Example return
+#### Example return
 ```
 stdClass Object
 (
@@ -279,7 +287,7 @@ stdClass Object
 )
 ```
 
-## Get Commissions Detail List
+### Get Commissions Detail List
 If you’re including your end users in Wildlink compensation, you can use this call to fetch a detailed record of every commission that Wildlink is aware of for the client/device (including each commission’s status).
 
 
@@ -288,7 +296,7 @@ $commissions = $wfClient->getCommissionDetails();
 var_dump($commissions);
 ```
 
-### Example return
+#### Example return
 ```
 Array (
     [0] => stdClass Object
@@ -317,7 +325,7 @@ Array (
 )
 ```
 
-## Get Click Stats
+### Get Click Stats
 If appropriate, you can display total clicks for a given device for a time range (by day, month or year).  This method takes a start and end date value (the end value is optional).
 
 
@@ -326,7 +334,7 @@ $clicks = $wfClient->getClickStatsByDay('2018-01-01');
 var_dump($clicks);
 ```
 
-### Example return
+#### Example return
 ```
 stdClass Object
 (
@@ -336,7 +344,7 @@ stdClass Object
 ```
 
 
-## Create Vanity URL (i.e. http://wild.link/walmart/abc123)
+### Create Vanity URL (i.e. http://wild.link/walmart/abc123)
 Convert a URL (to a product page, listing page, etc.) to a wild.link URL with embedded tracking for the authenticated device.
 
 
@@ -345,7 +353,7 @@ $vanityUrl = $wfClient->getVanityUrl('https://www.walmart.com/ip/VIZIO-24-Class-
 var_dump($vanityUrl);
 ```
 
-### Example return
+#### Example return
 ```
 stdClass Object
 (
