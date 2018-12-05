@@ -103,6 +103,31 @@ Array
 )
 ```
 
+## Get Commission Rate Data for a Merchant
+The getMerchantCommissionRates call can be used to fetch commission rate information for a given merchant.  Some merchants have a single commission rate and others have a segmented series of rates (sometimes by product category, sometimes by other attributes).  The commission rate in the return data takes into account your agreed-upon commission split (so you see your commission amount after Wildfire Systems has taken their share).  Some commission terms are percentage rates while others are flat amounts.  Where there are flat amounts, a currency code will be included.  Wildlink doesn't convert currencies in this context at this time.  Wildlink always pays out in USD and will convert the currencies before payment is issued to you.  When available, a default commission rate will be denoted, but note that not all merchants have a specified default currency.
+
+```php
+$singleMerchantCommissionRates = $wfClient->getMerchantCommissionRates(5477615);
+var_dump($singleMerchantCommissionRates);
+```
+
+### Example return
+```
+Array
+(
+    [0] => stdClass Object
+        (
+            [ID] => 41
+            [Name] => ESR merchant hotel
+            [DisplayName] =>
+            [Kind] => PERCENTAGE
+            [Amount] => 3
+            [IsDefault] =>
+        )
+)
+```
+
+
 ## Get All Merchants (excludes disabled merchants) metadata
 
 ```php
