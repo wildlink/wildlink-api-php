@@ -340,7 +340,7 @@ class WildlinkClient
     public function getPagedCommissions()
     {
         if (!isset($this->commissionListCursor)){
-            $this->commissionListCursor = '';
+            return "getPagedCommissions cannot be called directly as it needs a cursor reference.  Instead use 'new CommissionList(\$wfClient, \$commissions_since_date)' and cycle through commission records using \$commissionList->getCurrentCommission(), \$commissionList->hasNextCommission() and \$commissionList->getNextCommission()";
         }
 
         $result = $this->request('getAppCommissionsByCursor', [
