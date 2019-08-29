@@ -119,6 +119,17 @@ class WildlinkClient
             $api_info->method = 'POST';
         }
 
+        // CONCEPTS functions
+        if ($function == 'getAvailableConcepts'){
+            $api_info->endpoint = '/v2/concept/:kind?addable=1&limit=:limit';
+            $api_info->method = 'GET';
+        }
+
+        if ($function == 'addConceptToList'){
+            $api_info->endpoint = '/v2/application_concept/application/:application_id?';
+            $api_info->method = 'POST';
+        }
+
         return $api_info;
     }
 
@@ -402,6 +413,26 @@ class WildlinkClient
     {
         $result = $this->request('getVanityUrl', [
             'post_obj' => (object) ['URL'=>$url]
+        ]);
+        return $result;
+    }
+
+    // KEYWORD functions
+    public function getAvailableConcepts($kind = '', $limit = '')
+    {
+        $result = $this->request('getAvailableConcepts', [
+            'kind' => $kind,
+            'limit' => $limit,
+        ]);
+        return $result;
+    }
+
+    // depends on whether the application is set to use white-list or black-list but this function will add it to whatever list the application is configured to use
+    public function addConceptToList($application_id = '', $concept_id = '')
+    {
+        $result = $this->request('addConceptToList', [
+            'application_id' => $application_id,
+            'post_obj' => (object) ['ConceptID' => $concept_id]
         ]);
         return $result;
     }
