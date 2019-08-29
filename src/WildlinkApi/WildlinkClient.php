@@ -121,7 +121,7 @@ class WildlinkClient
 
         // CONCEPTS functions
         if ($function == 'getAvailableConcepts'){
-            $api_info->endpoint = '/v2/concept/:kind?addable=1&limit=:limit';
+            $api_info->endpoint = '/v2/concept/:kind?addable=1&limit=:limit&cursor=:cursor&sort_by=:sort_by&min_rank=:min_rank';
             $api_info->method = 'GET';
         }
 
@@ -418,11 +418,14 @@ class WildlinkClient
     }
 
     // KEYWORD functions
-    public function getAvailableConcepts($kind = '', $limit = '')
+    public function getAvailableConcepts($kind = '', $limit = '', $cursor = '', $sort_by = '', $min_rank = '')
     {
         $result = $this->request('getAvailableConcepts', [
             'kind' => $kind,
             'limit' => $limit,
+            'cursor' => $cursor,
+            'sort_by' => $sort_by,
+            'min_rank' => $min_rank,
         ]);
         return $result;
     }
