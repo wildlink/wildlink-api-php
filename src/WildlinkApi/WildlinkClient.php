@@ -130,6 +130,17 @@ class WildlinkClient
             $api_info->method = 'POST';
         }
 
+        // NLP functions
+        if ($function == 'markupNlp'){
+            $api_info->endpoint = '/v1/nlp/analyze';
+            $api_info->method = 'POST';
+        }
+
+        if ($function == 'markupNlpV2'){
+            $api_info->endpoint = '/v2/nlp/analyze';
+            $api_info->method = 'POST';
+        }
+        
         return $api_info;
     }
 
