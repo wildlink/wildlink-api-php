@@ -440,4 +440,37 @@ class WildlinkClient
         return $result;
     }
 
+    // NLP functions
+    public function markupNlp($text)
+    {
+        $result = $this->request('markupNlp', [
+            'text' => $text
+        ]);
+        return $result;
+    }
+    
+    public function markupNlpV2($text)
+    {
+        $result = $this->request('markupNlpV2', [
+            'post_obj' => (object) [
+                'Type' => 'text',
+                'Language' => 'en-US',
+                'Content' => $text,
+                ]
+        ]);
+        return $result;
+    }
+    
+    public function makeInsertionContext($text_without_links, $text_with_links)
+    {
+        $result = $this->request('makeInsertionContext', [
+            'post_obj' => (object) [
+                'context' => $text_without_links,
+                'context_with_link' => $text_with_links,
+                'sent_time' => date('Y-m-d\TH:i:s.v', time()) . 'Z',
+                'destination_app' => 'fireball.app',
+                ]
+        ]);
+        return $result;
+    }
 }
