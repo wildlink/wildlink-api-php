@@ -4,11 +4,12 @@ namespace WildlinkApi;
 
 class WildlinkClient
 {
-    public function __construct($app_id, $secret, $device_key = '', $device_token = '', $debug = 0)
+    public function __construct($app_id, $secret, $device_key = '', $device_token = '', $debug = 0, $dev = 0)
     {
         $this->app_id = $app_id;
         $this->secret = $secret;
         $this->debug = $debug;
+        $this->dev = $dev;
 
         if ($device_key && $device_token){
             // device_key and device_token provided, so just store the values
@@ -147,7 +148,11 @@ class WildlinkClient
 
     public function request($function, $vars = null)
     {
-        $api_url_base = "https://api.wfi.re";
+        if ($this->dev){
+            $api_url_base = "https://dev-api.wfi.re";
+        } else {
+            $api_url_base = "https://api.wfi.re";
+        }
 
         $api_info = $this->getEndpointInfo($function);
         $api_url = $api_url_base . $api_info->endpoint;
