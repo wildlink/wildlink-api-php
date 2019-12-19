@@ -4,10 +4,11 @@ namespace WildlinkApi;
 
 class WildlinkClient
 {
-    public function __construct($app_id, $secret, $device_key = '', $device_token = '')
+    public function __construct($app_id, $secret, $device_key = '', $device_token = '', $debug = 0)
     {
         $this->app_id = $app_id;
         $this->secret = $secret;
+        $this->debug = $debug;
 
         if ($device_key && $device_token){
             // device_key and device_token provided, so just store the values
@@ -146,8 +147,6 @@ class WildlinkClient
 
     public function request($function, $vars = null)
     {
-        #$vars['debug'] = true;
-
         $api_url_base = "https://api.wfi.re";
 
         $api_info = $this->getEndpointInfo($function);
@@ -168,7 +167,7 @@ class WildlinkClient
             }
         }
 
-        if (isset($vars['debug'])){
+        if ($this->debug){
             print_r($api_url);
         }
 
@@ -200,7 +199,7 @@ class WildlinkClient
             $opts['http']['content'] = json_encode($vars['post_obj']);
         }
 
-        if (isset($vars['debug'])){
+        if ($this->debug){
             echo("\n\nauth token : " . print_r($auth_token, 1));
             echo("\n\npost data : " . print_r($opts, 1));
         }
@@ -209,7 +208,7 @@ class WildlinkClient
         $result_json = file_get_contents($api_url, false, $context);
         $result = json_decode($result_json);
 
-        if (isset($vars['debug'])){
+        if ($this->debug){
             echo "\n\nresult:\n\n";
             print_r($result_json);
         }
