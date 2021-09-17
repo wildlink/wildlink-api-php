@@ -142,6 +142,19 @@ class WildlinkClient
             $api_info->endpoint = '/v2/nlp/analyze';
             $api_info->method = 'POST';
         }
+
+        // COUPONS functions
+        if ($function == 'getCouponsByNetworkMerchant'){
+            // get all coupons for a NM ID
+            $api_info->endpoint = '/v2/network_merchant/:network_merchant_id/coupon';
+            $api_info->method = 'GET';
+        }
+
+        if ($function == 'updateCoupon'){
+            // update a single coupon by coupon ID
+            $api_info->endpoint = '/v2/network_merchant_coupon/:coupon_id';
+            $api_info->method = 'POST';
+        }
         
         return $api_info;
     }
@@ -488,4 +501,33 @@ class WildlinkClient
         ]);
         return $result;
     }
+
+    // NLP functions
+    public function getCouponsByNetworkMerchant($network_merchant_id)
+    {
+        $result = $this->request('getCouponsByNetworkMerchant', [
+            'network_merchant_id' => $network_merchant_id
+        ]);
+        return $result;
+    }
+    
+    public function updateCoupon($id, $xid, $network_merchant_id, $name, $description, $code, $url, $disabled, $start_date, $end_date, $exclusions)
+    {
+        $result = $this->request('updateCoupon', [
+            'post_obj' => (object) [
+                'ID' => (int) $id,
+                'XID' => $xid,
+                'NetworkMerchantID' => (int) $network_merchant_id,
+                'Name' => $name,
+                'Description' => $description,
+                'Code' => $code,
+                'Url' => $url,
+                'Disabled' => (boolean) $disabled,
+                'StartDate' => $start_date,
+                'EndDate' => $end_date,
+                'Exclusions' => $exclusions,
+                ]
+        ]);
+        return $result;
+    }    
 }
