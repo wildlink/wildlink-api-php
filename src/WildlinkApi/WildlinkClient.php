@@ -127,9 +127,24 @@ class WildlinkClient
             $api_info->method = 'GET';
         }
 
+        if ($function == 'getCurrentConcepts'){
+            $api_info->endpoint = '/v2/concept/:kind?addable=0&limit=:limit&cursor=:cursor&sort_by=:sort_by&min_rank=:min_rank';
+            $api_info->method = 'GET';
+        }
+
+        if ($function == 'getConcepts'){
+            $api_info->endpoint = '/v2/concept/:kind?limit=:limit&cursor=:cursor&sort_by=:sort_by&min_rank=:min_rank';
+            $api_info->method = 'GET';
+        }
+
         if ($function == 'addConceptToList'){
             $api_info->endpoint = '/v2/application_concept/application/:application_id?';
             $api_info->method = 'POST';
+        }
+
+        if ($function == 'removeConceptFromList'){
+            $api_info->endpoint = '/v2/application_concept/application/:application_id/concept/:concept_id';
+            $api_info->method = 'DELETE';
         }
 
         // NLP functions
