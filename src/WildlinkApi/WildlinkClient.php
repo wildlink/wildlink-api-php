@@ -473,6 +473,30 @@ class WildlinkClient
         return $result;
     }
 
+    public function getCurrentConcepts($kind = '', $limit = '', $cursor = '', $sort_by = '', $min_rank = '')
+    {
+        $result = $this->request('getCurrentConcepts', [
+            'kind' => $kind,
+            'limit' => $limit,
+            'cursor' => $cursor,
+            'sort_by' => $sort_by,
+            'min_rank' => $min_rank,
+        ]);
+        return $result;
+    }
+
+    public function getConcepts($kind = '', $limit = '', $cursor = '', $sort_by = '', $min_rank = '')
+    {
+        $result = $this->request('getConcepts', [
+            'kind' => $kind,
+            'limit' => $limit,
+            'cursor' => $cursor,
+            'sort_by' => $sort_by,
+            'min_rank' => $min_rank,
+        ]);
+        return $result;
+    }
+
     // depends on whether the application is set to use white-list or black-list but this function will add it to whatever list the application is configured to use
     public function addConceptToList($application_id = '', $concept_id = '')
     {
@@ -483,6 +507,15 @@ class WildlinkClient
         return $result;
     }
 
+    public function removeConceptFromList($application_id = '', $concept_id = '')
+    {
+        $result = $this->request('removeConceptFromList', [
+            'application_id' => $application_id,
+            'concept_id' => $concept_id,
+        ]);
+        return $result;
+    }
+    
     // NLP functions
     public function markupNlp($text)
     {
