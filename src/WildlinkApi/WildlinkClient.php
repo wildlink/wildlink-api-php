@@ -127,9 +127,24 @@ class WildlinkClient
             $api_info->method = 'GET';
         }
 
+        if ($function == 'getCurrentConcepts'){
+            $api_info->endpoint = '/v2/concept/:kind?addable=0&limit=:limit&cursor=:cursor&sort_by=:sort_by&min_rank=:min_rank';
+            $api_info->method = 'GET';
+        }
+
+        if ($function == 'getConcepts'){
+            $api_info->endpoint = '/v2/concept/:kind?limit=:limit&cursor=:cursor&sort_by=:sort_by&min_rank=:min_rank';
+            $api_info->method = 'GET';
+        }
+
         if ($function == 'addConceptToList'){
             $api_info->endpoint = '/v2/application_concept/application/:application_id?';
             $api_info->method = 'POST';
+        }
+
+        if ($function == 'removeConceptFromList'){
+            $api_info->endpoint = '/v2/application_concept/application/:application_id/concept/:concept_id';
+            $api_info->method = 'DELETE';
         }
 
         // NLP functions
@@ -458,6 +473,30 @@ class WildlinkClient
         return $result;
     }
 
+    public function getCurrentConcepts($kind = '', $limit = '', $cursor = '', $sort_by = '', $min_rank = '')
+    {
+        $result = $this->request('getCurrentConcepts', [
+            'kind' => $kind,
+            'limit' => $limit,
+            'cursor' => $cursor,
+            'sort_by' => $sort_by,
+            'min_rank' => $min_rank,
+        ]);
+        return $result;
+    }
+
+    public function getConcepts($kind = '', $limit = '', $cursor = '', $sort_by = '', $min_rank = '')
+    {
+        $result = $this->request('getConcepts', [
+            'kind' => $kind,
+            'limit' => $limit,
+            'cursor' => $cursor,
+            'sort_by' => $sort_by,
+            'min_rank' => $min_rank,
+        ]);
+        return $result;
+    }
+
     // depends on whether the application is set to use white-list or black-list but this function will add it to whatever list the application is configured to use
     public function addConceptToList($application_id = '', $concept_id = '')
     {
@@ -468,6 +507,15 @@ class WildlinkClient
         return $result;
     }
 
+    public function removeConceptFromList($application_id = '', $concept_id = '')
+    {
+        $result = $this->request('removeConceptFromList', [
+            'application_id' => $application_id,
+            'concept_id' => $concept_id,
+        ]);
+        return $result;
+    }
+    
     // NLP functions
     public function markupNlp($text)
     {
