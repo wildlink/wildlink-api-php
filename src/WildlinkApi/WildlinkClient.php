@@ -502,7 +502,7 @@ class WildlinkClient
     {
         $result = $this->request('addConceptToList', [
             'application_id' => $application_id,
-            'post_obj' => (object) ['ConceptID' => $concept_id]
+            'post_obj' => (object) ['ApplicationID' => $application_id, 'ConceptID' => $concept_id]
         ]);
         return $result;
     }
